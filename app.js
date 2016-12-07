@@ -31,18 +31,22 @@ function MenuListDirective() {
   function NarrowItDownController(MenuSearchService){
     var controller = this;
     controller.inputText = '';
-    controller.found = [];
-    controller.errorText = false;
+
+    function setToDefault(){
+      controller.found = [];
+      controller.errorOccured = false;
+    }
+
     controller.search = function(){
+      setToDefault()
       if(controller.inputText.trim().length === 0){
         controller.errorOccured = true;
         return;
       }
     var promise = MenuSearchService.getMatchedMenuItems(controller.inputText);
-    controller.found = [];
+    setToDefault();
     promise.then(function (response) {
       controller.found = response;
-      controller.errorOccured = false;
       if(controller.found.length === 0){
         controller.errorOccured = true;
       }
@@ -55,6 +59,8 @@ function MenuListDirective() {
     controller.removeItem = function (index) {
       controller.found.splice(index, 1);
     };
+
+
   }
 
 MenuSearchService.$inject = ['$http','RestApiPath'];
